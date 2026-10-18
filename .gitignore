@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Large or private media: never commit videos or faces
+*.mp4
+*.avi
+*.mkv
+*.mov
+recordings/*_big.jsonl
+eval/frames/
+data/real/videos/
+
+# TensorRT engines over 50 MB are rebuilt in PipeGen (see pipegen_export/README.md)
+*.plan
+*.engine
+pipegen_export/**/*.onnx
+
+# Runtime output
+incidents.jsonl
+gateway/data/
+*.bak
+*.log
+!pipegen_export/**/*.log
+.cs_run/
+
+# Bundles (extracted into data/)
+crowdshield_variants.zip
+crowdshield_bundle.zip
+

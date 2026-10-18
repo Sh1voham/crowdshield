@@ -1,0 +1,56 @@
+{
+  "image_points": [
+    [
+      1179.6,
+      498.3
+    ],
+    [
+      740.4,
+      498.3
+    ],
+    [
+      57.6,
+      749.3
+    ],
+    [
+      1862.4,
+      749.3
+    ]
+  ],
+  "world_points": [
+    [
+      0,
+      0
+    ],
+    [
+      24,
+      0
+    ],
+    [
+      24,
+      12
+    ],
+    [
+      0,
+      12
+    ]
+  ],
+  "frame_size": [
+    1920,
+    1080
+  ],
+  "area": {
+    "width_m": 24,
+    "height_m": 12
+  },
+  "zone": "Gate A (synthetic surge)",
+  "foot_mode": "bbox_bottom",
+  "plane_height_m": 0.0,
+  "note": "exact projection of the area corners (floor plane)",
+  "gate": {
+    "x": 24,
+    "y0": 5.1,
+    "y1": 6.9,
+    "label": "Gate A"
+  }
+}

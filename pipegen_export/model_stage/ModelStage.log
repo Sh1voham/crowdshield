@@ -1,0 +1,17 @@
+# PipeGen model stage — shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc
+# UTC                   step             outcome  fact
+2026-10-17T17:12:49Z  visualize        start    Checking every node against the TensorRT parser…
+2026-10-17T17:13:37Z  visualize        ok       321 nodes · 0 unresolved
+2026-10-17T17:17:06Z  compile          start    Compiling the model with TensorRT at FP16…
+2026-10-17T17:18:08Z  visualize        ok       321 nodes · 0 unresolved
+2026-10-17T17:19:31Z  choice           user     selected_artifact=baseline
+2026-10-17T17:19:32Z  choice           user     optimization_decision=
+2026-10-17T17:19:32Z  compile          warning  fp16 · 251 TRT layers · 20.3 MB
+2026-10-17T17:27:09Z  accuracy         start    Running the engine and the original ONNX over the same frames to see whether compiling changed the answers…
+2026-10-17T17:27:41Z  accuracy         ok       source=pseudo · 30 samples · mAP50=0.9904
+2026-10-17T17:28:18Z  benchmark        start    Benchmarking the compiled engine on this device…
+2026-10-17T17:28:29Z  engine           ok       14.082 ms mean
+2026-10-17T17:31:42Z  quantize_prepare start    Resolving this model's calibration path from PipelineIR…
+2026-10-17T17:31:50Z  choice           user     optimization_decision=preparing
+2026-10-17T17:32:17Z  choice           user     selected_artifact=baseline
+2026-10-17T17:32:17Z  choice           user     optimization_decision=kept

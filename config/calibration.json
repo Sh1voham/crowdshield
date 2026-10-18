@@ -1,0 +1,56 @@
+{
+  "image_points": [
+    [
+      720,
+      215
+    ],
+    [
+      870,
+      520
+    ],
+    [
+      60,
+      520
+    ],
+    [
+      250,
+      215
+    ]
+  ],
+  "world_points": [
+    [
+      0,
+      0
+    ],
+    [
+      18,
+      0
+    ],
+    [
+      18,
+      16
+    ],
+    [
+      0,
+      16
+    ]
+  ],
+  "frame_size": [
+    960,
+    540
+  ],
+  "area": {
+    "width_m": 18,
+    "height_m": 16
+  },
+  "zone": "Concourse (MOT20-02)",
+  "foot_mode": "bbox_bottom",
+  "head_k": 6.5,
+  "gate": {
+    "x": 0,
+    "y0": 6,
+    "y1": 10,
+    "label": "North exit"
+  },
+  "note": "APPROXIMATE: corners estimated by eye on the MOT20-02 public video (no taped reference). Floor plan: x = distance from the far end (0) toward the camera (18 m), y = across the concourse (16 m). Recalibrate on /calibrate with a measured rectangle before trusting absolute densities."
+}

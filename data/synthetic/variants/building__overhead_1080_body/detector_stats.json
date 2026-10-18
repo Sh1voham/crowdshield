@@ -1,0 +1,21 @@
+{
+  "frames": 1800,
+  "fps": 10,
+  "camera": "overhead",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "detector": "body",
+  "focal_px": 1266.5,
+  "camera_position_m": [
+    12.0,
+    7.44,
+    18.0
+  ],
+  "true_person_frames": 196547,
+  "detected": 189034,
+  "recall": 0.9618,
+  "false_positives": 528,
+  "track_ids_issued": 1343
+}

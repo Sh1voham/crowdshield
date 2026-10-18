@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrowdShield Calibrate</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow: auto; }
+  .cal { display: grid; grid-template-columns: minmax(0, 1fr) 360px; grid-template-rows: auto 1fr; grid-template-areas: "top top" "img side"; min-height: 100vh; }
+  .cal header { grid-area: top; display: flex; align-items: center; gap: 16px; padding: 10px 18px; border-bottom: var(--line) solid var(--hair); }
+  .stagebox { grid-area: img; position: relative; padding: 16px; overflow: hidden; }
+  #wrap { position: relative; display: inline-block; max-width: 100%; }
+  #frame { display: block; max-width: 100%; max-height: calc(100vh - 110px); user-select: none; -webkit-user-drag: none; }
+  #ov { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+  #loupe { position: absolute; width: 150px; height: 150px; border-radius: 50%; border: 2px solid var(--ink); pointer-events: none; display: none; box-shadow: 0 4px 18px rgba(0,0,0,.35); }
+  aside { grid-area: side; padding: 18px; border-left: var(--line) solid var(--hair); display: grid; gap: 14px; align-content: start; }
+  aside h2 { font-family: var(--font-sign); font-size: 26px; margin: 0; }
+  aside label { display: grid; gap: 4px; font-size: var(--s-small); color: var(--ink-dim); }
+  aside input, aside select { width: 100%; min-width: 0; padding: 7px 9px; border-radius: 6px; border: var(--line) solid var(--hair-strong); background: var(--stage-lift); color: var(--ink); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .steps { margin: 0; padding-left: 20px; font-size: var(--s-small); }
+  .steps li[data-done="true"] { color: var(--ink-dim); text-decoration: line-through; }
+  #msg { font-weight: 700; min-height: 1.4em; }
+  #msg[data-kind="error"] { color: var(--crit); }
+  .note { font-size: var(--s-small); color: var(--ink-dim); }
+  @media (max-width: 900px) { .cal { grid-template-columns: 1fr; grid-template-areas: "top" "img" "side"; } aside { border-left: 0; } }
+</style>
+</head>
+<body>
+<div class="cal">
+  <header>
+    <div class="brand">CrowdShield</div>
+    <div class="zone">Calibrate the floor</div>
+    <div class="top-spacer"></div>
+    <label class="btn">Upload a snapshot <input type="file" id="upload" accept="image/*" hidden></label>
+    <button class="btn" id="reload">Reload frame</button>
+    <a class="btn" href="/" style="text-decoration:none">Command screen</a>
+  </header>
+  <div class="stagebox">
+    <div id="wrap">
+      <img id="frame" alt="Still frame of the scene">
+      <canvas id="ov"></canvas>
+      <canvas id="loupe" width="150" height="150"></canvas>
+    </div>
+    <p class="note" id="frame-note"></p>
+  </div>
+  <aside>
+    <h2>Taped rectangle</h2>
+    <ol class="steps" id="steps">
+      <li>Click its top-left corner</li><li>top-right</li><li>bottom-right</li><li>bottom-left</li>
+    </ol>
+    <p class="note">"Top-left" means the floor plan's origin, not the image: the first corner is (0, 0) and the second sets the x direction. The gate sits on the plan's left or right wall, so start from a corner on the gate's wall. Drag a corner to adjust it; a magnifier follows the cursor. In head-plane mode, click the head of an average-height person standing on each corner instead.</p>
+    <div class="two">
+      <label>Rectangle width (m)<input id="rw" type="number" step="0.01" min="0.1" value="6"></label>
+      <label>Rectangle depth (m)<input id="rh" type="number" step="0.01" min="0.1" value="4"></label>
+      <label>Its left edge at x (m)<input id="rx" type="number" step="0.1" value="0"></label>
+      <label>Its top edge at y (m)<input id="ry" type="number" step="0.1" value="0"></label>
+      <label>Monitored area width (m)<input id="aw" type="number" step="0.1" min="0.5" value="6"></label>
+      <label>Monitored area depth (m)<input id="ah" type="number" step="0.1" min="0.5" value="4"></label>
+    </div>
+    <h2>Gate</h2>
+    <div class="two">
+      <label>Wall<select id="gside"><option value="right">Right edge (x = width)</option><option value="left">Left edge (x = 0)</option></select></label>
+      <label>Name<input id="glabel" value="Gate A"></label>
+      <label>From y (m)<input id="gy0" type="number" step="0.1" value="1"></label>
+      <label>To y (m)<input id="gy1" type="number" step="0.1" value="3"></label>
+    </div>
+    <label>Zone name<input id="zone" value="Gate A"></label>
+    <div class="two">
+      <label>Detector<select id="foot"><option value="bbox_bottom">Body boxes (feet at the box bottom)</option><option value="head_offset">Head boxes, floor calibration</option><option value="head_plane">Head boxes, head-plane calibration</option></select></label>
+      <label>Plane<select id="plane"><option value="floor">Floor</option><option value="head">Head plane</option></select></label>
+    </div>
+    <div class="btnrow">
+      <button class="btn" id="check" aria-pressed="false">Check a distance</button>
+      <button class="btn" id="clear">Clear points</button>
+      <button class="btn" id="save">Save calibration</button>
+    </div>
+    <p id="msg" role="status"></p>
+  </aside>
+</div>
+<script type="module" src="js/calibrate.js"></script>
+</body>
+</html>

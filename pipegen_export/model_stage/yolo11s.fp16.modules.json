@@ -1,0 +1,260 @@
+{
+  "blocks": [
+    {
+      "name": "Input / stem",
+      "operations": "Input reformat + stride-2 conv + SiLU",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 1.876365,
+      "pct": 12.56,
+      "start_index": 0,
+      "end_index": 6,
+      "layer_count": 7
+    },
+    {
+      "name": "Backbone stage 1 (P2, 160\u00d7160 C2f)",
+      "operations": "Conv + C2f bottleneck with residual concat",
+      "precision": "FP16",
+      "time_ms": 1.431743,
+      "pct": 9.58,
+      "start_index": 7,
+      "end_index": 16,
+      "layer_count": 10
+    },
+    {
+      "name": "Backbone stage 2 downsample (to 80\u00d780)",
+      "operations": "Stride-2 conv + conv",
+      "precision": "FP16",
+      "time_ms": 0.416998,
+      "pct": 2.79,
+      "start_index": 17,
+      "end_index": 18,
+      "layer_count": 2
+    },
+    {
+      "name": "Backbone stage 2 C2f (80\u00d780)",
+      "operations": "C2f: 1x bottleneck (Conv+SiLU+residual)",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.673998,
+      "pct": 4.51,
+      "start_index": 19,
+      "end_index": 29,
+      "layer_count": 11
+    },
+    {
+      "name": "Backbone stage 3 downsample (to 40\u00d740)",
+      "operations": "Stride-2 conv",
+      "precision": "FP16",
+      "time_ms": 0.354811,
+      "pct": 2.38,
+      "start_index": 30,
+      "end_index": 30,
+      "layer_count": 1
+    },
+    {
+      "name": "Backbone stage 3 C2f (40\u00d740)",
+      "operations": "C2f: 3x bottleneck (Conv+SiLU+residual)",
+      "precision": "FP16",
+      "time_ms": 0.505136,
+      "pct": 3.38,
+      "start_index": 31,
+      "end_index": 45,
+      "layer_count": 15
+    },
+    {
+      "name": "Backbone stage 4 downsample (to 20\u00d720)",
+      "operations": "Stride-2 conv",
+      "precision": "FP16",
+      "time_ms": 0.180251,
+      "pct": 1.21,
+      "start_index": 46,
+      "end_index": 46,
+      "layer_count": 1
+    },
+    {
+      "name": "Backbone stage 4 C2f (20\u00d720)",
+      "operations": "C2f: 3x bottleneck (Conv+SiLU+residual)",
+      "precision": "FP16",
+      "time_ms": 0.666191,
+      "pct": 4.46,
+      "start_index": 47,
+      "end_index": 65,
+      "layer_count": 19
+    },
+    {
+      "name": "Backbone SPPF pyramid (20\u00d720)",
+      "operations": "Conv + 3x maxpool pyramid + conv",
+      "precision": "FP16",
+      "time_ms": 0.364468,
+      "pct": 2.44,
+      "start_index": 66,
+      "end_index": 74,
+      "layer_count": 9
+    },
+    {
+      "name": "Transformer block on P4 (20\u00d720)",
+      "operations": "Conv + MHSA + FFN + residual",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 1.079966,
+      "pct": 7.23,
+      "start_index": 75,
+      "end_index": 102,
+      "layer_count": 28
+    },
+    {
+      "name": "Top-down upsample from P4 to P3",
+      "operations": "Upsample 2x + concat with P3",
+      "precision": "FP16",
+      "time_ms": 0.159181,
+      "pct": 1.07,
+      "start_index": 103,
+      "end_index": 106,
+      "layer_count": 4
+    },
+    {
+      "name": "PAN neck C2f at P3 (40\u00d740)",
+      "operations": "Conv + C2f fusion (PAN) + conv",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.56091,
+      "pct": 3.75,
+      "start_index": 107,
+      "end_index": 116,
+      "layer_count": 10
+    },
+    {
+      "name": "Top-down upsample from P3 to P2",
+      "operations": "Upsample 2x + concat with P2",
+      "precision": "FP16",
+      "time_ms": 0.325431,
+      "pct": 2.18,
+      "start_index": 117,
+      "end_index": 119,
+      "layer_count": 3
+    },
+    {
+      "name": "PAN neck C2f at P2 (80\u00d780)",
+      "operations": "Conv + C2f fusion (PAN) + conv",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.622446,
+      "pct": 4.17,
+      "start_index": 120,
+      "end_index": 129,
+      "layer_count": 10
+    },
+    {
+      "name": "Bottom-up path from P2 to P3",
+      "operations": "Stride-2 conv + concat + conv",
+      "precision": "FP16",
+      "time_ms": 0.204682,
+      "pct": 1.37,
+      "start_index": 130,
+      "end_index": 132,
+      "layer_count": 3
+    },
+    {
+      "name": "PAN neck C2f at P3 (40\u00d740, bottom-up)",
+      "operations": "Conv + C2f fusion (PAN) + conv",
+      "precision": "FP16",
+      "time_ms": 0.495777,
+      "pct": 3.32,
+      "start_index": 133,
+      "end_index": 142,
+      "layer_count": 10
+    },
+    {
+      "name": "Bottom-up path from P3 to P4",
+      "operations": "Stride-2 conv + concat with P4",
+      "precision": "FP16",
+      "time_ms": 0.254011,
+      "pct": 1.7,
+      "start_index": 143,
+      "end_index": 146,
+      "layer_count": 4
+    },
+    {
+      "name": "PAN neck C2f at P4 (20\u00d720, bottom-up)",
+      "operations": "Conv + deep C2f fusion + conv",
+      "precision": "FP16",
+      "time_ms": 0.872738,
+      "pct": 5.84,
+      "start_index": 147,
+      "end_index": 164,
+      "layer_count": 18
+    },
+    {
+      "name": "Detection head: box conv stack at P4",
+      "operations": "3x conv + reshape for boxes (stride-32)",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.447812,
+      "pct": 3.0,
+      "start_index": 165,
+      "end_index": 170,
+      "layer_count": 6
+    },
+    {
+      "name": "Detection head: box conv stack at P3",
+      "operations": "3x conv + reshape for boxes (stride-16)",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.33023,
+      "pct": 2.21,
+      "start_index": 186,
+      "end_index": 192,
+      "layer_count": 7
+    },
+    {
+      "name": "Detection head: box conv stack at P2",
+      "operations": "3x conv + reshape for boxes (stride-8)",
+      "precision": "FP16",
+      "time_ms": 0.658625,
+      "pct": 4.41,
+      "start_index": 208,
+      "end_index": 213,
+      "layer_count": 6
+    },
+    {
+      "name": "DFL distance distribution and decoding",
+      "operations": "DFL reshape + softmax + 1x1 conv",
+      "precision": "FP16",
+      "time_ms": 0.321011,
+      "pct": 2.15,
+      "start_index": 214,
+      "end_index": 221,
+      "layer_count": 8
+    },
+    {
+      "name": "Box coordinate decode and scaling",
+      "operations": "Elementwise add/sub/div/mul for xywh decode",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.336842,
+      "pct": 2.25,
+      "start_index": 222,
+      "end_index": 233,
+      "layer_count": 12
+    },
+    {
+      "name": "Class head conv stack at P2",
+      "operations": "5x conv + SiLU for class logits",
+      "precision": "FP16",
+      "time_ms": 0.747275,
+      "pct": 5.0,
+      "start_index": 234,
+      "end_index": 248,
+      "layer_count": 15
+    },
+    {
+      "name": "Final class sigmoid and output",
+      "operations": "Sigmoid on class scores + reformat",
+      "precision": "Mixed FP16/FP32",
+      "time_ms": 0.094217,
+      "pct": 0.63,
+      "start_index": 249,
+      "end_index": 250,
+      "layer_count": 2
+    }
+  ],
+  "source": "reasoner",
+  "architecture": "YOLOv8-style object detector: C2f CSP backbone + PAN/FPN neck + decoupled DFL detection head with one transformer-attention block",
+  "total_ms": 14.938277,
+  "layer_count": 251,
+  "warnings": [],
+  "fingerprint": "251:14.938:/model.23/Constant_15_output_0 + ONNXTRT_Broadcast_112:Reformatting CopyNode for Output Tensor 0 to PWN(/model.23/Sigmoid)"
+}

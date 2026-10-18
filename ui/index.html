@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrowdShield Command</title>
+<meta name="description" content="Live crowd density, pressure and advisories from PipeGen person tracking.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 24c4-10 8-14 12-14s8 4 12 14' fill='none' stroke='%238ec5ff' stroke-width='2.5'/%3E%3Cpath d='M9 24c2.5-6 4.6-8 7-8s4.5 2 7 8' fill='none' stroke='%23ffe7c4' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand" aria-label="CrowdShield">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25c4-11 8.5-15 13-15s9 4 13 15" fill="none" stroke="var(--contour)" stroke-width="2.2"/><path d="M8.5 25c2.6-6.5 4.8-9 7.5-9s4.9 2.5 7.5 9" fill="none" stroke="var(--terrain-hi)" stroke-width="2.2"/><circle cx="16" cy="25" r="1.8" fill="var(--terrain-hi)"/></svg>
+      CrowdShield
+    </div>
+    <div class="zone" id="zone">Waiting for data</div>
+    <div class="source-label" id="source-label" data-kind="none" hidden></div>
+    <div class="top-spacer"></div>
+    <div class="vitals" id="vitals" aria-label="Pipeline vitals"></div>
+    <div class="conn" id="conn" data-state="connecting" role="status">Connecting</div>
+    <button class="iconbtn" id="btn-incidents" title="Incidents (I)">Incidents</button>
+    <button class="iconbtn" id="btn-system" title="System (S)">System</button>
+    <button class="iconbtn" id="btn-theme" title="Theme (T)" aria-pressed="false">Day</button>
+    <button class="iconbtn" id="btn-projector" title="Projector mode (P)" aria-pressed="false">Projector</button>
+    <button class="iconbtn" id="btn-help" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
+  </header>
+
+  <section class="slab" id="slab" data-level="GREEN" data-stale="false" aria-label="Current status">
+    <div class="stale-band" id="stale-band" role="alert"></div>
+    <div class="status-head">
+      <svg class="status-icon" id="status-icon" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="status-word" id="status-word">—</div>
+      <div class="status-time" id="status-time"></div>
+    </div>
+    <div class="advice" id="advice">Waiting for the first measurement.</div>
+    <div class="readings" id="readings">
+      <div class="reading"><div><span class="v" id="r-density">—</span><span class="u">/m²</span></div><div class="k">Peak density</div></div>
+      <div class="reading"><div><span class="v" id="r-pressure">—</span><span class="u">× threshold</span></div><div class="k">Crowd pressure</div></div>
+      <div class="reading"><div><span class="v" id="r-people">—</span></div><div class="k">People in view</div></div>
+      <div class="reading"><div><span class="v" id="r-speed">—</span><span class="u">m/s</span></div><div class="k">Mean speed</div></div>
+    </div>
+    <div class="forecast" id="forecast"></div>
+    <div class="sign">
+      <canvas id="led" width="512" height="128" role="img" aria-label="Gate sign"></canvas>
+      <div class="sign-caption"><span>Gate sign (advisory)</span><span class="ack" id="sign-ack" data-ok="false">No sign connected</span></div>
+    </div>
+  </section>
+
+  <main class="field" id="field" aria-label="Survey field: live crowd density, flow and pressure">
+    <canvas class="gl" id="field-canvas" aria-hidden="true"></canvas>
+    <div class="labels" id="labels"></div>
+    <div class="dim-veil" id="dim-veil"></div>
+    <div class="reality" id="reality">
+      <img id="reality-img" alt="Camera view">
+      <canvas id="reality-canvas"></canvas>
+      <div class="still-label" id="reality-still">Still frame</div>
+      <div class="credit" id="reality-credit"></div>
+      <label class="opacity">Overlay <input type="range" id="reality-opacity" min="0" max="100" value="70"></label>
+    </div>
+    <div class="banner" id="banner"></div>
+    <div class="field-tools">
+      <button class="iconbtn" id="btn-reality" title="Reality lock: analysis on the camera image (R)" aria-pressed="false">Camera</button>
+      <button class="iconbtn" id="btn-reset" title="Reset view (double-click)">Reset view</button>
+      <button class="iconbtn" id="btn-readout" title="Read out the numbers">Read out</button>
+    </div>
+    <div class="legend" id="legend">
+      <div>People per m² <span id="legend-height"></span></div>
+      <div class="ramp"></div>
+      <div class="ticks"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span></div>
+      <div class="scale"><i id="scale-bar" style="width:40px"></i><span id="scale-text">5 m</span></div>
+    </div>
+    <div class="tip" id="tip"></div>
+  </main>
+
+  <section class="seismo" aria-label="Seismograph: pressure and density over the last 5 minutes">
+    <canvas id="seismo-canvas"></canvas>
+    <div class="caption" id="seismo-caption">Pressure × threshold and peak density, last 5 min</div>
+  </section>
+
+  <section class="river" aria-label="Time river: the whole session">
+    <div class="river-canvas"><canvas id="river-canvas" tabindex="0" aria-label="Session timeline. Drag or use arrow keys to replay."></canvas></div>
+    <button class="iconbtn live-btn" id="btn-live" aria-pressed="true" title="Back to live (L)">Live</button>
+  </section>
+</div>
+
+<aside class="sheet" id="sheet-readout" aria-label="Read out"><button class="iconbtn close" data-close>Close</button><h2>Read out</h2><div id="readout-body"></div></aside>
+<aside class="sheet" id="sheet-incidents" aria-label="Incidents"><button class="iconbtn close" data-close>Close</button><h2>Incidents</h2><div id="incidents-body"></div><h3>Alerts</h3><div id="alerts-body"></div></aside>
+<aside class="sheet" id="sheet-system" aria-label="System"><button class="iconbtn close" data-close>Close</button><h2>System</h2><div id="system-body"></div></aside>
+<aside class="sheet" id="sheet-help" aria-label="Keyboard shortcuts"><button class="iconbtn close" data-close>Close</button><h2>Keyboard</h2>
+  <table>
+    <tr><td><span class="kbd">1</span>–<span class="kbd">5</span></td><td>Command, Incidents, System, Calibrate, Judge</td></tr>
+    <tr><td><span class="kbd">L</span></td><td>Back to live, or replay the last minute</td></tr>
+    <tr><td><span class="kbd">R</span></td><td>Reality lock: analysis on the camera image</td></tr>
+    <tr><td><span class="kbd">T</span></td><td>Night or day theme</td></tr>
+    <tr><td><span class="kbd">P</span></td><td>Projector mode</td></tr>
+    <tr><td><span class="kbd">M</span></td><td>Reduced motion</td></tr>
+    <tr><td><span class="kbd">E</span></td><td>Low power (UI capped at 15 fps)</td></tr>
+    <tr><td><span class="kbd">?</span></td><td>This list</td></tr>
+  </table>
+  <h3>Reading the field</h3>
+  <p>Height and warmth show density in people per m². Thick contours mark 4 /m² (Building) and 6 /m² (Critical). Moving streaks follow the measured flow. Where crowd pressure passes its threshold the surface trembles and rings spread from the cell.</p>
+</aside>
+<div id="announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

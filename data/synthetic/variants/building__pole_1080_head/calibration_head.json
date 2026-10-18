@@ -1,0 +1,56 @@
+{
+  "image_points": [
+    [
+      1126.1,
+      435.1
+    ],
+    [
+      797.4,
+      432.2
+    ],
+    [
+      763.9,
+      592.4
+    ],
+    [
+      1156.5,
+      590.6
+    ]
+  ],
+  "world_points": [
+    [
+      9.0,
+      4.0
+    ],
+    [
+      15.0,
+      4.0
+    ],
+    [
+      15.0,
+      8.0
+    ],
+    [
+      9.0,
+      8.0
+    ]
+  ],
+  "frame_size": [
+    1920,
+    1080
+  ],
+  "area": {
+    "width_m": 24,
+    "height_m": 12
+  },
+  "zone": "Gate A (synthetic building)",
+  "foot_mode": "head_plane",
+  "plane_height_m": 1.7200000000000002,
+  "note": "head plane: click the head centre of a person of average height standing on each taped corner (2 px error)",
+  "gate": {
+    "x": 24,
+    "y0": 4.9,
+    "y1": 7.1,
+    "label": "Gate A"
+  }
+}

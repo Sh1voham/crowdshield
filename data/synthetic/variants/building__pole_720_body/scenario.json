@@ -1,0 +1,21 @@
+{
+  "scenario": "building",
+  "description": "Inflow ramps up toward a 2.2 m gate; a queue builds to critical density.",
+  "zone": "Gate A (synthetic building)",
+  "gate": {
+    "x": 24,
+    "y0": 4.9,
+    "y1": 7.1,
+    "label": "Gate A"
+  },
+  "area": {
+    "width_m": 24,
+    "height_m": 12
+  },
+  "fps": 10,
+  "source": "CrowdShield simulator trajectories, SYNTHETIC",
+  "truth_from": "../../building",
+  "camera": "pole",
+  "resolution": "720",
+  "detector": "body"
+}

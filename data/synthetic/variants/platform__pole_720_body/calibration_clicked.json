@@ -1,0 +1,50 @@
+{
+  "image_points": [
+    [
+      729.8,
+      323.0
+    ],
+    [
+      544.0,
+      325.0
+    ],
+    [
+      525.7,
+      438.0
+    ],
+    [
+      747.8,
+      440.1
+    ]
+  ],
+  "world_points": [
+    [
+      12.0,
+      2.0
+    ],
+    [
+      18.0,
+      2.0
+    ],
+    [
+      18.0,
+      6.0
+    ],
+    [
+      12.0,
+      6.0
+    ]
+  ],
+  "frame_size": [
+    1280,
+    720
+  ],
+  "area": {
+    "width_m": 30,
+    "height_m": 8
+  },
+  "zone": "Zone (platform, synthetic)",
+  "foot_mode": "bbox_bottom",
+  "plane_height_m": 0.0,
+  "note": "taped 6 x 4 m rectangle with 2 px click error (floor plane)"
+}

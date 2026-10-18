@@ -1,0 +1,21 @@
+{
+  "frames": 1800,
+  "fps": 10,
+  "camera": "pole",
+  "resolution": [
+    1280,
+    720
+  ],
+  "detector": "body",
+  "focal_px": 629.4,
+  "camera_position_m": [
+    12.0,
+    18.0,
+    12.0
+  ],
+  "true_person_frames": 196547,
+  "detected": 178234,
+  "recall": 0.9068,
+  "false_positives": 543,
+  "track_ids_issued": 1348
+}

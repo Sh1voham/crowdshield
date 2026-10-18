@@ -1,0 +1,50 @@
+{
+  "image_points": [
+    [
+      1778.4,
+      322.1
+    ],
+    [
+      141.6,
+      322.1
+    ],
+    [
+      122.0,
+      763.1
+    ],
+    [
+      1798.0,
+      763.1
+    ]
+  ],
+  "world_points": [
+    [
+      0,
+      0
+    ],
+    [
+      30,
+      0
+    ],
+    [
+      30,
+      8
+    ],
+    [
+      0,
+      8
+    ]
+  ],
+  "frame_size": [
+    1920,
+    1080
+  ],
+  "area": {
+    "width_m": 30,
+    "height_m": 8
+  },
+  "zone": "Zone (platform, synthetic)",
+  "foot_mode": "bbox_bottom",
+  "plane_height_m": 0.0,
+  "note": "exact projection of the area corners (floor plane)"
+}

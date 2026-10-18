@@ -1,0 +1,56 @@
+{
+  "image_points": [
+    [
+      993.6,
+      259.1
+    ],
+    [
+      286.4,
+      259.1
+    ],
+    [
+      38.4,
+      597.1
+    ],
+    [
+      1241.6,
+      597.1
+    ]
+  ],
+  "world_points": [
+    [
+      0,
+      0
+    ],
+    [
+      24,
+      0
+    ],
+    [
+      24,
+      12
+    ],
+    [
+      0,
+      12
+    ]
+  ],
+  "frame_size": [
+    1280,
+    720
+  ],
+  "area": {
+    "width_m": 24,
+    "height_m": 12
+  },
+  "zone": "Gate A (synthetic building)",
+  "foot_mode": "bbox_bottom",
+  "plane_height_m": 0.0,
+  "note": "exact projection of the area corners (floor plane)",
+  "gate": {
+    "x": 24,
+    "y0": 4.9,
+    "y1": 7.1,
+    "label": "Gate A"
+  }
+}

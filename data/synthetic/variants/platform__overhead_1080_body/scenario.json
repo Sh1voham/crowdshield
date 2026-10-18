@@ -1,0 +1,18 @@
+{
+  "scenario": "platform",
+  "description": "Railway platform (30 x 8 m): heavy inflow from the stairs for 60 s; passengers crowd toward four doors that open only from 70 s to 100 s. Density builds at the platform edge.",
+  "zone": "Zone (platform, synthetic)",
+  "area": {
+    "width_m": 30,
+    "height_m": 8
+  },
+  "fps": 10,
+  "source": "tools/crowd_sim.py (SYNTHETIC; simple social-force-style model)",
+  "seed": 14,
+  "duration_s": 150,
+  "peak_people": 189,
+  "truth_from": "../../platform",
+  "camera": "overhead",
+  "resolution": "1080",
+  "detector": "body"
+}

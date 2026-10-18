@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CrowdShield Steward</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow: auto; }
+  .st { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: max(16px, env(safe-area-inset-top)) 16px 16px; gap: 14px; }
+  .st header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .st .zone { max-width: 70vw; color: var(--ink); font-size: 22px; }
+  .big { display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; border-radius: 18px; padding: 22px 12px; transition: background-color 300ms; }
+  .big svg { width: min(46vw, 210px); height: auto; }
+  .big .word { font-family: var(--font-sign); font-weight: 700; font-size: clamp(64px, 20vw, 120px); line-height: 0.9; }
+  .big .act { font-size: 22px; font-weight: 700; max-width: 22ch; line-height: 1.25; }
+  .big .since { font-family: var(--font-sign); font-size: 22px; color: var(--ink-dim); }
+  .big[data-level="GREEN"] { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+  .big[data-level="AMBER"] { background: color-mix(in srgb, var(--warn) 22%, transparent); }
+  .big[data-level="RED"] { background: color-mix(in srgb, var(--crit) 22%, transparent); }
+  .big[data-level="GREEN"] .word { color: var(--ok); } .big[data-level="AMBER"] .word { color: var(--warn); } .big[data-level="RED"] .word { color: var(--crit); }
+  .big[data-stale="true"] { background: repeating-linear-gradient(-45deg, transparent 0 12px, color-mix(in srgb, var(--ink) 8%, transparent) 12px 15px); }
+  .big[data-stale="true"] .word, .big[data-stale="true"] svg { filter: grayscale(1) opacity(.5); }
+  .exit { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; font-size: 18px; }
+  .exit svg { width: 64px; height: 64px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .meta { display: flex; gap: 18px; justify-content: center; font-family: var(--font-sign); font-size: 22px; color: var(--ink-dim); }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .mini { width: 100%; max-width: 360px; aspect-ratio: 2 / 1; border: var(--line) solid var(--hair-strong); border-radius: 8px; touch-action: manipulation; }
+  .stale-note { display: none; font-weight: 700; text-align: center; }
+  .big[data-stale="true"] + .stale-note { display: block; }
+</style>
+</head>
+<body>
+<div class="st">
+  <header>
+    <div class="zone" id="zone">Connecting…</div>
+    <div class="source-label" id="src" hidden></div>
+  </header>
+  <main>
+    <section class="big" id="big" data-level="" aria-live="assertive" aria-atomic="true">
+      <svg id="icon" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="word" id="word">—</div>
+      <div class="act" id="act">Waiting for the first measurement.</div>
+      <div class="since" id="since"></div>
+    </section>
+    <p class="stale-note" id="stale"></p>
+    <div class="meta"><span>Peak <b id="d">—</b> /m²</span><span>Pressure <b id="p">—</b>×</span><span><b id="n">—</b> people</span></div>
+    <section class="exit" aria-label="Nearest exit">
+      <svg id="arrow" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2" opacity=".3"/><path id="arrow-path" d="M32 10 L46 34 H36 V54 H28 V34 H18 Z" fill="currentColor"/></svg>
+      <div id="exit-text">Tap your position on the map to point the arrow at the gate.</div>
+    </section>
+    <canvas class="mini" id="mini" width="720" height="360" aria-label="Map: tap where you are standing"></canvas>
+  </main>
+  <footer class="row">
+    <button class="btn" id="alerts-on">Turn on vibration and sound</button>
+    <a class="btn" href="/" style="text-decoration:none">Command screen</a>
+  </footer>
+</div>
+<script type="module" src="js/steward.js"></script>
+</body>
+</html>

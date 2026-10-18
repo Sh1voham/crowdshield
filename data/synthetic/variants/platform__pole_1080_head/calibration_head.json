@@ -1,0 +1,50 @@
+{
+  "image_points": [
+    [
+      1115.5,
+      434.8
+    ],
+    [
+      807.9,
+      431.9
+    ],
+    [
+      777.8,
+      612.8
+    ],
+    [
+      1142.6,
+      611.0
+    ]
+  ],
+  "world_points": [
+    [
+      12.0,
+      2.0
+    ],
+    [
+      18.0,
+      2.0
+    ],
+    [
+      18.0,
+      6.0
+    ],
+    [
+      12.0,
+      6.0
+    ]
+  ],
+  "frame_size": [
+    1920,
+    1080
+  ],
+  "area": {
+    "width_m": 30,
+    "height_m": 8
+  },
+  "zone": "Zone (platform, synthetic)",
+  "foot_mode": "head_plane",
+  "plane_height_m": 1.7200000000000002,
+  "note": "head plane: click the head centre of a person of average height standing on each taped corner (2 px error)"
+}

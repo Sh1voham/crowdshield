@@ -1,0 +1,21 @@
+{
+  "scenario": "surge",
+  "description": "Sudden surge toward a 1.8 m gate; critical quickly.",
+  "zone": "Gate A (synthetic surge)",
+  "gate": {
+    "x": 24,
+    "y0": 5.1,
+    "y1": 6.9,
+    "label": "Gate A"
+  },
+  "area": {
+    "width_m": 24,
+    "height_m": 12
+  },
+  "fps": 10,
+  "source": "CrowdShield simulator trajectories, SYNTHETIC",
+  "truth_from": "../../surge",
+  "camera": "overhead",
+  "resolution": "1080",
+  "detector": "body"
+}

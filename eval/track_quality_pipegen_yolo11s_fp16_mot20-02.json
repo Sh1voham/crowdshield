@@ -1,0 +1,17 @@
+{
+  "recording": "recordings/pipegen_yolo11s_fp16_mot20-02.jsonl",
+  "calibration": "config/calibration.json",
+  "frames": 2782,
+  "duration_s": 111.2,
+  "detections": 139086,
+  "untracked_fraction": 0.0,
+  "tracks": 886,
+  "median_track_s": 5.48,
+  "p90_track_s": 17.12,
+  "short_track_fraction": 0.1591,
+  "births_per_min": 477.9,
+  "deaths_per_min": 417.5,
+  "speed_p50_mps": 1.34,
+  "speed_p99_mps": 6.5,
+  "speed_sanity_pass": false
+}

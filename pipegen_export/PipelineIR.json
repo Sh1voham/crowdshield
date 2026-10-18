@@ -1,0 +1,551 @@
+{
+  "loop": {
+    "next_file": null,
+    "next_task": null,
+    "projectTree": {},
+    "target_function": {
+      "name": "read_file",
+      "parameters": {}
+    },
+    "visited_steps": [
+      "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/application.py",
+      "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx"
+    ]
+  },
+  "pipeline_ir": {
+    "connections": [
+      [
+        "p01o_frame",
+        "p02i_frame"
+      ],
+      [
+        "p02o_blob",
+        "p03i_blob"
+      ],
+      [
+        "p03o_raw",
+        "p04i_raw"
+      ],
+      [
+        "p02o_geometry",
+        "p04i_geometry"
+      ],
+      [
+        "p01o_frame",
+        "p05i_frame"
+      ],
+      [
+        "p04o_people",
+        "p05i_people"
+      ],
+      [
+        "p01o_meta",
+        "p05i_meta"
+      ],
+      [
+        "p05o_record",
+        "p06i_record"
+      ],
+      [
+        "p05o_record",
+        "p07i_record"
+      ],
+      [
+        "p01o_frame",
+        "p08i_frame"
+      ],
+      [
+        "p05o_record",
+        "p08i_record"
+      ]
+    ],
+    "nodes": [
+      {
+        "description": "Read every video frame with its source timestamp.",
+        "id": 1,
+        "name": "file",
+        "ports": [
+          {
+            "direction": "output",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p01o_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                540,
+                960,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p01o_meta",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import cv2\ncap = cv2.VideoCapture('/home/dread/videos/crowd/MOT20-02.mp4')\nif not cap.isOpened():\n    raise FileNotFoundError('/home/dread/videos/crowd/MOT20-02.mp4')\nframe_index = 0\ntry:\n    while True:\n        ok, frame = cap.read()\n        if not ok:\n            break\n        fps = cap.get(cv2.CAP_PROP_FPS) or 25.0\n        position_ms = cap.get(cv2.CAP_PROP_POS_MSEC)\n        timestamp_s = position_ms / 1000.0 if position_ms > 0 else frame_index / fps\n        yield frame, {'frame_index': frame_index, 'timestamp_s': timestamp_s}\n        frame_index += 1\nfinally:\n    cap.release()",
+        "resolution": [
+          960,
+          540
+        ],
+        "type": "input",
+        "url": "file:///home/dread/videos/crowd/MOT20-02.mp4"
+      },
+      {
+        "color_order": "RGB",
+        "description": "Letterbox BGR frames and prepare normalized RGB tensors.",
+        "id": 2,
+        "mean": null,
+        "normalization": 0.00392156862745098,
+        "offset": null,
+        "pad_value": 114,
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p02i_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                540,
+                960,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p02o_blob",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                640,
+                640
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p02o_geometry",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import cv2\nimport numpy as np\n\ndef process(img):\n    orig_h, orig_w = img.shape[:2]\n    input_h = input_w = 640\n    r = min(input_h / orig_h, input_w / orig_w)\n    new_w, new_h = round(orig_w * r), round(orig_h * r)\n    resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LINEAR)\n    canvas = np.full((input_h, input_w, 3), 114, dtype=np.uint8)\n    pad_x, pad_y = (input_w - new_w) // 2, (input_h - new_h) // 2\n    canvas[pad_y:pad_y + new_h, pad_x:pad_x + new_w] = resized\n    blob = cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0\n    blob = np.ascontiguousarray(np.transpose(blob, (2, 0, 1))[None])\n    geometry = {'ratio': r, 'pad_x': pad_x, 'pad_y': pad_y, 'orig_w': orig_w, 'orig_h': orig_h}\n    return blob, geometry",
+        "resize": [
+          640,
+          640
+        ],
+        "resize_mode": "letterbox",
+        "scale": 0.00392156862745098,
+        "std": null,
+        "type": "preprocess"
+      },
+      {
+        "batchSize": 1,
+        "description": "Run batch-one YOLO11s inference on prepared crowd frames.",
+        "id": 3,
+        "layout": "NCHW",
+        "model": {
+          "inputs": [
+            {
+              "dtype": "fp32",
+              "name": "images",
+              "shape": [
+                1,
+                3,
+                640,
+                640
+              ]
+            }
+          ],
+          "name": "YOLO11s COCO person detector",
+          "outputs": [
+            {
+              "dtype": "fp32",
+              "name": "output0",
+              "shape": [
+                1,
+                84,
+                8400
+              ]
+            }
+          ],
+          "parameter_count": 9485791,
+          "type": "engine",
+          "url": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/model_stage/yolo11s.fp16.plan",
+          "source_onnx": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "RGB",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p03i_blob",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                3,
+                640,
+                640
+              ]
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p03o_raw",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                84,
+                8400
+              ]
+            }
+          }
+        ],
+        "pseudo_code": "import onnxruntime as ort\nmodel_path = '/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx'\nsess = ort.InferenceSession(model_path, providers=ort.get_available_providers())\ndef process(blob):\n    return sess.run(['output0'], {'images': blob})[0]\n# The deployment model stage builds the requested batch-one TensorRT FP16 engine\n# from this ONNX model and reports its speed. INT8 is a comparison build only\n# when valid calibration data is available; no INT8 accuracy is presumed.",
+        "type": "inference"
+      },
+      {
+        "description": "Decode person boxes, undo letterboxing, and apply NMS.",
+        "id": 4,
+        "label_file_path": null,
+        "num_classes": 80,
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p04i_raw",
+            "tensor": {
+              "dtype": "fp32",
+              "shape": [
+                1,
+                84,
+                8400
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p04i_geometry",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p04o_people",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import cv2\nimport numpy as np\n\ndef process(raw, geometry):\n    confidence_threshold, nms_threshold = 0.25, 0.45\n    preds = np.squeeze(raw, 0).T\n    boxes_xywh, scores = preds[:, :4], preds[:, 4:]\n    class_ids = np.argmax(scores, axis=1)\n    confidences = scores[np.arange(scores.shape[0]), class_ids]\n    keep = confidences >= confidence_threshold\n    boxes_xywh, confidences, class_ids = boxes_xywh[keep], confidences[keep], class_ids[keep]\n    if len(boxes_xywh) == 0:\n        return []\n    cx, cy, w, h = boxes_xywh.T\n    r, pad_x, pad_y = geometry['ratio'], geometry['pad_x'], geometry['pad_y']\n    orig_w, orig_h = geometry['orig_w'], geometry['orig_h']\n    x1 = np.clip((cx - w / 2 - pad_x) / r, 0, orig_w)\n    y1 = np.clip((cy - h / 2 - pad_y) / r, 0, orig_h)\n    x2 = np.clip((cx + w / 2 - pad_x) / r, 0, orig_w)\n    y2 = np.clip((cy + h / 2 - pad_y) / r, 0, orig_h)\n    people = []\n    # The source performs NMS separately for each of its 80 COCO classes,\n    # then selects the model's COCO person class (class ID 0).\n    for c in np.unique(class_ids):\n        idxs = np.where(class_ids == c)[0]\n        rects = np.stack([x1[idxs], y1[idxs], (x2 - x1)[idxs], (y2 - y1)[idxs]], axis=1)\n        kept = cv2.dnn.NMSBoxes(rects.tolist(), confidences[idxs].tolist(), confidence_threshold, nms_threshold)\n        kept = np.array(kept).flatten() if len(kept) else []\n        for i in kept:\n            oi = idxs[i]\n            if c == 0:\n                people.append({'box': [float(x1[oi]), float(y1[oi]), float(x2[oi]), float(y2[oi])], 'score': float(confidences[oi]), 'class': 'person'})\n    return people",
+        "task": "detection",
+        "threshold": 0.25,
+        "top_items": null,
+        "type": "postprocess"
+      },
+      {
+        "category": "tracking",
+        "description": "Assign persistent DeepStream tracker IDs to observed people.",
+        "external_assets": [
+          "/opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so",
+          "/opt/nvidia/deepstream/deepstream/samples/configs/deepstream-app/config_tracker_NvDCF_perf.yml"
+        ],
+        "id": 5,
+        "inputs": [
+          "image",
+          "bbox",
+          "frame metadata"
+        ],
+        "name": "person tracking",
+        "outputs": [
+          "per-frame tracked-person metadata"
+        ],
+        "parameters": {
+          "ll_config_file": "/opt/nvidia/deepstream/deepstream/samples/configs/deepstream-app/config_tracker_NvDCF_perf.yml",
+          "ll_lib_file": "/opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so",
+          "method": "DeepStream nvtracker"
+        },
+        "placement": {
+          "attach_point": null,
+          "position": "post_nn"
+        },
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p05i_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                540,
+                960,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p05i_people",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p05i_meta",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          },
+          {
+            "direction": "output",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p05o_record",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import os\n\n# Install this stage as the native DeepStream nvtracker element immediately\n# after person detections have been attached to their frame's NvDsBatchMeta.\n# The graph adapter maps each input detection's pixel box, score and COCO\n# class ID 0 to NvDsObjectMeta on the SAME input frame. A zero-detection\n# frame still enters nvtracker, allowing its association state to advance.\ndef configure_tracker(pipeline, upstream, downstream, Gst, parameters):\n    library = parameters['ll_lib_file']\n    config = parameters['ll_config_file']\n    for path in (library, config):\n        if not os.path.isfile(path):\n            raise FileNotFoundError(path)\n    tracker = Gst.ElementFactory.make('nvtracker', 'person-nvtracker')\n    if tracker is None:\n        raise RuntimeError('DeepStream nvtracker is required')\n    tracker.set_property('ll-lib-file', library)\n    tracker.set_property('ll-config-file', config)\n    pipeline.add(tracker)\n    if not upstream.link(tracker) or not tracker.link(downstream):\n        raise RuntimeError('Could not link DeepStream nvtracker')\n    return tracker\n\n# Called on each batch after the configured native nvtracker has processed it.\n# pyds is the installed DeepStream Python binding; NvDsObjectMeta is native\n# output from nvtracker, not an ID synthesized from box order.\ndef process(frame, detections, source_meta, tracked_frame_meta, pyds):\n    persons = []\n    item = tracked_frame_meta.obj_meta_list\n    while item is not None:\n        obj = pyds.NvDsObjectMeta.cast(item.data)\n        # nvtracker can retain/predict objects without a current detection.\n        # Publish only currently observed person detections, not missed IDs.\n        if int(obj.class_id) == 0 and float(obj.confidence) >= 0.25:\n            rect = obj.rect_params\n            persons.append({'bbox': [float(rect.left), float(rect.top), float(rect.left + rect.width), float(rect.top + rect.height)], 'tracker_id': int(obj.object_id), 'confidence': float(obj.confidence)})\n        try:\n            item = item.next\n        except StopIteration:\n            item = None\n    return {'frame_index': int(source_meta['frame_index']), 'timestamp': float(source_meta['timestamp_s']), 'persons': persons}\n\n# tracked_frame_meta is the native metadata of the same frame supplied to\n# the configured nvtracker. The adapter must attach the detections before\n# nvtracker and invoke process after it; frame pixels are never serialized.",
+        "reference_path": null,
+        "runs_every_frame": true,
+        "state_key": "global",
+        "triggers": [],
+        "type": "custom"
+      },
+      {
+        "description": "Write each frame's person metadata to JSON.",
+        "grid": null,
+        "id": 6,
+        "name": "json",
+        "output_type": "single",
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p06i_record",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import json\nimport os\npath = '/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/output/metadata.json'\nos.makedirs(os.path.dirname(path), exist_ok=True)\nwith open(path, 'w', encoding='utf-8') as f:\n    f.write('[]')\ncount = 0\ndef process(record):\n    global count\n    with open(path, 'r+', encoding='utf-8') as f:\n        f.seek(0, os.SEEK_END)\n        f.seek(f.tell() - 1)\n        if count:\n            f.write(',')\n        json.dump(record, f, allow_nan=False)\n        f.write(']')\n        f.truncate()\n        f.flush()\n    count += 1",
+        "resolution": null,
+        "type": "output",
+        "url": "file:///home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/output/metadata.json"
+      },
+      {
+        "description": "Publish one complete detection message per video frame.",
+        "grid": null,
+        "id": 7,
+        "name": "mqtt",
+        "output_type": "single",
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p07i_record",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import json\nimport paho.mqtt.client as mqtt\nclient = mqtt.Client()\nclient.connect('localhost', 1883, 60)\nclient.loop_start()\ndef process(record):\n    payload = json.dumps(record, separators=(',', ':'), allow_nan=False)\n    result = client.publish('crowdshield/detections', payload, qos=0)\n    if result.rc != mqtt.MQTT_ERR_SUCCESS:\n        raise RuntimeError('MQTT publication failed')\n# On shutdown, wait for queued messages, then call client.loop_stop()\n# and client.disconnect(). Empty persons lists are published too.",
+        "resolution": null,
+        "type": "output",
+        "url": "mqtt://localhost:1883/crowdshield/detections"
+      },
+      {
+        "description": "Display original video with tracked boxes and IDs.",
+        "grid": null,
+        "id": 8,
+        "name": "display",
+        "output_type": "single",
+        "ports": [
+          {
+            "direction": "input",
+            "format": {
+              "color": "BGR",
+              "encoding": "raw"
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p08i_frame",
+            "tensor": {
+              "dtype": "uint8",
+              "shape": [
+                540,
+                960,
+                3
+              ]
+            }
+          },
+          {
+            "direction": "input",
+            "format": {
+              "color": null,
+              "encoding": null
+            },
+            "framerate": {
+              "denominator": 1,
+              "numerator": 25
+            },
+            "id": "p08i_record",
+            "tensor": {
+              "dtype": null,
+              "shape": null
+            }
+          }
+        ],
+        "pseudo_code": "import cv2\n\ndef process(frame, record):\n    out = frame.copy()\n    height, width = out.shape[:2]\n    for person in record['persons']:\n        x1, y1, x2, y2 = (int(round(v)) for v in person['bbox'])\n        x1, x2 = max(0, min(width - 1, x1)), max(0, min(width - 1, x2))\n        y1, y2 = max(0, min(height - 1, y1)), max(0, min(height - 1, y2))\n        cv2.rectangle(out, (x1, y1), (x2, y2), (0, 255, 0), 2)\n        cv2.putText(out, str(person['tracker_id']), (x1, max(18, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)\n    cv2.imshow('Crowd person tracking', out)\n    cv2.waitKey(1)\n    return None\n# No video frames or faces are written to disk.",
+        "resolution": [
+          960,
+          540
+        ],
+        "type": "output",
+        "url": null
+      }
+    ]
+  }
+}

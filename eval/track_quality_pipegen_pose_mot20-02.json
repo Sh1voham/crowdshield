@@ -1,0 +1,17 @@
+{
+  "recording": "recordings/pipegen_pose_mot20-02.jsonl",
+  "calibration": "config/calibration.json",
+  "frames": 2782,
+  "duration_s": 111.2,
+  "detections": 9806,
+  "untracked_fraction": 0.0,
+  "tracks": 123,
+  "median_track_s": 3.24,
+  "p90_track_s": 7.39,
+  "short_track_fraction": 0.3333,
+  "births_per_min": 66.3,
+  "deaths_per_min": 64.2,
+  "speed_p50_mps": 1.25,
+  "speed_p99_mps": 4.24,
+  "speed_sanity_pass": false
+}

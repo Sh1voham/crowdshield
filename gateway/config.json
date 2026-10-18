@@ -1,0 +1,102 @@
+{
+  "topic_prefix": "crowdshield",
+  "data_dir": "gateway/data",
+  "static_root": "ui",
+  "ws_max_hz": 5,
+  "mjpeg_fps": 8,
+  "history_full_s": 120,
+  "history_keep_s": 3600,
+  "history_summary_hz": 2,
+  "pipegen_pgrep": "gst-launch-1.0",
+  "engine_pgrep": "crowdshield.run",
+  "calibration_files": {
+    "floor": "config/calibration.json",
+    "head": "config/calibration_head.json"
+  },
+  "frames": {
+    "video": "~/videos/crowd/MOT20-02.mp4",
+    "rtsp": null,
+    "image": null,
+    "vms_mjpeg": "127.0.0.1:7010"
+  },
+  "control": {
+    "python": null,
+    "pipegen_ctl": "scripts/pipegen_ctl.sh",
+    "engine_profiles": {
+      "live": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "tail:~/.crowdshield/run/metadata.json",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "live"
+      ],
+      "video": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "tail:~/.crowdshield/run/metadata.json",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "video"
+      ],
+      "vms": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "tcp://127.0.0.1:7002",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "live"
+      ],
+      "mqtt": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "mqtt://localhost:1883/crowdshield/detections",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "live"
+      ],
+      "demo": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "tail:~/.crowdshield/run/metadata.json",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "live",
+        "--profile",
+        "demo"
+      ],
+      "replay": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "jsonl:{recording}",
+        "--realtime",
+        "--calibration",
+        "config/calibration.json",
+        "--source-label",
+        "replay"
+      ],
+      "synthetic": [
+        "-m",
+        "crowdshield.run",
+        "--source",
+        "jsonl:{recording}",
+        "--realtime",
+        "--calibration",
+        "{calibration}",
+        "--source-label",
+        "synthetic"
+      ]
+    }
+  }
+}

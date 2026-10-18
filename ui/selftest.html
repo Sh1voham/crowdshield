@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrowdShield self-test</title>
+<link rel="stylesheet" href="styles.css">
+<style>body { overflow: auto; padding: 24px; } li { margin: 6px 0; } .pass { color: var(--ok); } .fail { color: var(--crit); } h1 { font-family: var(--font-sign); }</style>
+</head>
+<body>
+<h1>Self-test</h1>
+<p id="summary">Running…</p>
+<ul id="list"></ul>
+<script type="module">
+  import { cases } from "./js/selftest_cases.js";
+  let pass = 0;
+  const list = document.getElementById("list");
+  for (const [name, fn] of cases) {
+    const li = document.createElement("li");
+    try { fn(); li.className = "pass"; li.textContent = `PASS  ${name}`; pass++; }
+    catch (e) { li.className = "fail"; li.textContent = `FAIL  ${name}: ${e.message}`; }
+    list.appendChild(li);
+  }
+  const gl = !!document.createElement("canvas").getContext("webgl2");
+  document.getElementById("summary").textContent = `${pass} of ${cases.length} passed · WebGL2 ${gl ? "available" : "NOT available (the Canvas 2D fallback will be used)"}`;
+</script>
+</body>
+</html>

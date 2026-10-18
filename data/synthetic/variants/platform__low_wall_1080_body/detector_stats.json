@@ -1,0 +1,21 @@
+{
+  "frames": 1500,
+  "fps": 10,
+  "camera": "low_wall",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "detector": "body",
+  "focal_px": 229.6,
+  "camera_position_m": [
+    15.0,
+    10.0,
+    4.0
+  ],
+  "true_person_frames": 182260,
+  "detected": 143654,
+  "recall": 0.7882,
+  "false_positives": 430,
+  "track_ids_issued": 747
+}

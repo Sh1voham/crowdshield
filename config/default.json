@@ -1,0 +1,104 @@
+{
+  "grid": {
+    "cell_m": 1.0,
+    "kernel_R_m": 1.0,
+    "cutoff_R": 3.0,
+    "update_hz": 5.0,
+    "area_margin_m": 0.5
+  },
+  "kinematics": {
+    "min_dt_s": 1.0,
+    "ema_tau_s": 1.0,
+    "min_age_s": 0.5,
+    "history_s": 3.0
+  },
+  "pressure": {
+    "window_s": 8.0,
+    "min_samples": 15,
+    "min_density": 3.0,
+    "velocity_min_weight": 1.0,
+    "speed_min_weight": 0.3,
+    "p_thr": 0.02
+  },
+  "recall": {
+    "recall_estimate": 1.0,
+    "recall_curve": null
+  },
+  "status": {
+    "amber_density": 4.0,
+    "red_density": 6.0,
+    "amber_pidx": 0.5,
+    "amber_pidx_density": 3.0,
+    "red_pidx": 1.0,
+    "red_pidx_density": 4.0,
+    "rise_hold_s": 2.0,
+    "fall_hold_s": 10.0
+  },
+  "turbulence": {
+    "on_pidx": 1.0,
+    "on_density": 3.0,
+    "on_hold_s": 3.0,
+    "off_pidx": 0.8,
+    "off_hold_s": 5.0
+  },
+  "forecast": {
+    "window_s": 90.0,
+    "min_samples": 20,
+    "min_span_s": 30.0,
+    "min_slope_per_s": 0.0008,
+    "min_level": 2.0,
+    "min_r2": 0.4,
+    "max_horizon_s": 900.0,
+    "alert_horizon_s": 300.0
+  },
+  "risk": {
+    "w_density": 0.55,
+    "w_pressure": 0.3,
+    "w_trend": 0.15,
+    "trend_ref_per_min": 1.0
+  },
+  "tracker": {
+    "gate_m": 1.0,
+    "max_age_s": 1.0
+  },
+  "adapter": {
+    "labels": [
+      "person",
+      "head",
+      "pedestrian",
+      "0"
+    ],
+    "ts_unit": "auto",
+    "coords": "auto",
+    "default_fps": 10.0,
+    "max_backstep_s": 1.0
+  },
+  "publish": {
+    "state_hz": 5.0,
+    "status_hz": 1.0,
+    "actuator_period_s": 5.0,
+    "tracks_cap": 400,
+    "stale_s": 3.0
+  },
+  "pipeline": {
+    "model": "YOLO11s (COCO person class; PipeGen catalog source CheckoutMonitoring) + nvtracker",
+    "precision": "FP16"
+  },
+  "demo_profile": {
+    "status": {
+      "amber_density": 1.5,
+      "red_density": 2.5,
+      "amber_pidx_density": 1.125,
+      "red_pidx_density": 1.5
+    },
+    "turbulence": {
+      "on_density": 1.125
+    },
+    "forecast": {
+      "min_level": 0.75
+    },
+    "pressure": {
+      "min_density": 1.125
+    }
+  }
+}

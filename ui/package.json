@@ -1,0 +1,7 @@
+{
+  "name": "crowdshield-command-ui",
+  "private": true,
+  "type": "module",
+  "description": "CrowdShield Command: plain ES modules, no build step. Tests: node --test tests/ui",
+  "license": "UNLICENSED"
+}

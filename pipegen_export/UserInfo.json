@@ -1,0 +1,416 @@
+{
+  "info": {
+    "project_path": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring",
+    "pipeline_command": "python application.py /home/dread/videos/crowd/MOT20-02.mp4",
+    "project_name": "Crowd Person Tracking and Metadata",
+    "important_files": [],
+    "model_paths": [
+      "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx"
+    ],
+    "model_path": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx",
+    "architecture": {
+      "connections": [
+        {
+          "from": "n1",
+          "to": "n2"
+        },
+        {
+          "from": "n2",
+          "to": "n3"
+        },
+        {
+          "from": "n3",
+          "to": "n4"
+        },
+        {
+          "from": "n4",
+          "to": "n5"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "n1",
+          "name": "Video input",
+          "short_description": "Reads frames from the supplied video file."
+        },
+        {
+          "id": "n2",
+          "name": "Frame preprocessing",
+          "short_description": "Converts frames to RGB, letterboxes to 640×640, and scales pixel values."
+        },
+        {
+          "id": "n3",
+          "name": "YOLO11s ONNX detector",
+          "short_description": "Produces raw detection predictions for 80 COCO classes."
+        },
+        {
+          "id": "n4",
+          "name": "Detection decoder",
+          "short_description": "Transposes predictions, applies confidence filtering and NMS, and maps boxes to image coordinates."
+        },
+        {
+          "id": "n5",
+          "name": "Person detections",
+          "short_description": "Provides person bounding boxes and confidence scores; checkout-zone membership can be applied by the script."
+        }
+      ]
+    },
+    "analysis_summaries": [
+      "The repository provides checkout-lane monitoring using a COCO-pretrained YOLO11s person detector. It accepts image or multi-frame input, preprocesses frames as RGB 640×640 letterboxed tensors scaled to [0,1], and runs the local ONNX model. Its decoder transposes the raw predictions, applies confidence filtering and NMS, and returns image-coordinate detection boxes. Optional cashier and queue polygons support lane-status logic; the scan does not verify recall under severe crowd occlusion.",
+      "[read_file]: application.py: \"\"\"Single-image (or multi-frame) sanity test for checkout-lane monitoring.\n\nNo dedicated \"checkout monitoring\" model exists (searched Hugging Face for\n\"checkout monitoring\", \"self-checkout\", \"POS monitoring\", \"cashier\ndetection\", \"retail checkout\" -- only unrelated Stable-Diffusion LoRA\nrepos under \"openrail\" license and one empty stub repo turned up). Same\nsituation as QueueLengthMonitoring/DockUtilization: this is a\nzone-membership rule on top of person detection, not a trained visual\nclass. R"
+    ],
+    "user_prompt": "Detect and track every person in a dense crowd seen from a fixed, elevated camera. Input: the video file /home/dread/videos/crowd/MOT20-02.mp4 for now (later a USB camera or an RTSP stream). Model: a person or head detector that works under heavy occlusion, small enough for a GeForce GTX 1650 with 4 GB (batch 1, about 640 px input), compiled to a TensorRT FP16 engine (INT8 as well if possible, for comparison), with the speed report. Tracking: multi-object tracking with persistent IDs (DeepStream nvtracker). Output: for every frame, JSON metadata with each person's bounding box in pixels, tracker ID, confidence and the frame timestamp, written to a JSON file and also published over MQTT on topic crowdshield/detections to broker localhost:1883. Show the video with boxes and IDs. Do not store video or faces.",
+    "pipeline_requirements": {
+      "extras": {
+        "compile": {
+          "batch_size": 1,
+          "comparison_precision": "int8",
+          "input_size_px": 640,
+          "precision": "fp16",
+          "speed_report": true
+        },
+        "device": "GeForce GTX 1650 with 4 GB",
+        "input_roles": {
+          "input1": "dense crowd video from a fixed, elevated camera"
+        },
+        "scene_step": {
+          "advice": [],
+          "answered": {
+            "mount__input1": "level",
+            "size__input1": "not_sure"
+          },
+          "declined": [],
+          "inputs": {
+            "input1": {
+              "basis": {
+                "asks": [],
+                "kind": "video file",
+                "mtime": 1792249375.4469786,
+                "size": 22554704,
+                "tasks": [
+                  "person detection@input1"
+                ],
+                "url": "/home/dread/videos/crowd/MOT20-02.mp4"
+              },
+              "cues": [],
+              "duty": {
+                "colour_cast": 1.0,
+                "dock_daylight": 0.0,
+                "haze": 0.0,
+                "low_light_after_dark": 0.0
+              },
+              "evidence": [
+                "The view holds still between frames, so the camera looks fixed."
+              ],
+              "footage": {
+                "chroma_offset": 0.066,
+                "clipped_fraction": 0.015,
+                "dark_fraction": 0.071,
+                "fps": 25.0,
+                "frames": 2782,
+                "height": 540,
+                "mean_chroma": 13.9,
+                "motion": "fixed",
+                "noise": 0.35,
+                "p50": 0.475,
+                "rms_contrast": 0.231,
+                "rules": [],
+                "samples": 12,
+                "source": "video file",
+                "suggest": [],
+                "width": 960
+              },
+              "said": {},
+              "skipped": false
+            }
+          },
+          "ledger": [],
+          "needs": [],
+          "privacy_source": [],
+          "rules": {
+            "camera_angled": [],
+            "camera_fixed": [
+              "input1"
+            ],
+            "camera_moving": [],
+            "camera_shakes": [],
+            "motion_unknown": [],
+            "no_cloud": [],
+            "privacy": [],
+            "small_objects": [],
+            "store_events_only": []
+          },
+          "version": 1
+        }
+      },
+      "inputs": [
+        {
+          "data_kind": [
+            "frames"
+          ],
+          "fps": 25.0,
+          "id": "input1",
+          "resolution": "960x540",
+          "role": "dense crowd video from a fixed, elevated camera",
+          "type": "video file",
+          "url": "/home/dread/videos/crowd/MOT20-02.mp4"
+        }
+      ],
+      "needs_model": null,
+      "outputs": [
+        {
+          "id": "out1",
+          "type": "metadata_file",
+          "url": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/output/metadata.json"
+        },
+        {
+          "id": "out2",
+          "type": "mqtt",
+          "url": "mqtt://localhost:1883/crowdshield/detections"
+        },
+        {
+          "id": "out3",
+          "layout": "overlay",
+          "type": "live_display"
+        }
+      ],
+      "parallel": false,
+      "special_algorithms": [
+        {
+          "applies_to": [
+            "person detection@input1"
+          ],
+          "category": "tracking",
+          "confirmed": true,
+          "description": "Multi-object tracking with persistent IDs using DeepStream nvtracker.",
+          "name": "person tracking",
+          "parameters": {
+            "method": "DeepStream nvtracker"
+          },
+          "reference_path": null
+        }
+      ],
+      "target_classes": [],
+      "task_kind": null,
+      "tasks": [
+        {
+          "details": "Detect every person in a dense crowd under heavy occlusion. A person or head detector is acceptable. Provide bounding boxes in pixels and confidence. Do not store video or faces.",
+          "for_input": "input1",
+          "needs_model": true,
+          "target_classes": [
+            "person"
+          ],
+          "type": "person detection"
+        },
+        {
+          "derives_from": [
+            "person detection@input1"
+          ],
+          "details": "Multi-object tracking with persistent IDs using DeepStream nvtracker.",
+          "for_input": "input1",
+          "method": {
+            "catalogue": null,
+            "from": "words",
+            "name": "DeepStream nvtracker",
+            "params": {},
+            "quote": "multi-object tracking with persistent IDs (DeepStream nvtracker)"
+          },
+          "needs_model": false,
+          "target_classes": [
+            "person"
+          ],
+          "type": "person tracking"
+        }
+      ],
+      "user_intent_summary": "Detect and track every person in a dense crowd from the provided video, publish per-frame metadata to JSON and MQTT, and show boxes and IDs without storing video or faces."
+    },
+    "repo_sources": [
+      {
+        "analysis_summaries": [
+          "The repository provides checkout-lane monitoring using a COCO-pretrained YOLO11s person detector. It accepts image or multi-frame input, preprocesses frames as RGB 640×640 letterboxed tensors scaled to [0,1], and runs the local ONNX model. Its decoder transposes the raw predictions, applies confidence filtering and NMS, and returns image-coordinate detection boxes. Optional cashier and queue polygons support lane-status logic; the scan does not verify recall under severe crowd occlusion.",
+          "[read_file]: application.py: \"\"\"Single-image (or multi-frame) sanity test for checkout-lane monitoring.\n\nNo dedicated \"checkout monitoring\" model exists (searched Hugging Face for\n\"checkout monitoring\", \"self-checkout\", \"POS monitoring\", \"cashier\ndetection\", \"retail checkout\" -- only unrelated Stable-Diffusion LoRA\nrepos under \"openrail\" license and one empty stub repo turned up). Same\nsituation as QueueLengthMonitoring/DockUtilization: this is a\nzone-membership rule on top of person detection, not a trained visual\nclass. R"
+        ],
+        "architecture": {
+          "connections": [
+            {
+              "from": "n1",
+              "to": "n2"
+            },
+            {
+              "from": "n2",
+              "to": "n3"
+            },
+            {
+              "from": "n3",
+              "to": "n4"
+            },
+            {
+              "from": "n4",
+              "to": "n5"
+            }
+          ],
+          "nodes": [
+            {
+              "id": "n1",
+              "name": "Video input",
+              "short_description": "Reads frames from the supplied video file."
+            },
+            {
+              "id": "n2",
+              "name": "Frame preprocessing",
+              "short_description": "Converts frames to RGB, letterboxes to 640×640, and scales pixel values."
+            },
+            {
+              "id": "n3",
+              "name": "YOLO11s ONNX detector",
+              "short_description": "Produces raw detection predictions for 80 COCO classes."
+            },
+            {
+              "id": "n4",
+              "name": "Detection decoder",
+              "short_description": "Transposes predictions, applies confidence filtering and NMS, and maps boxes to image coordinates."
+            },
+            {
+              "id": "n5",
+              "name": "Person detections",
+              "short_description": "Provides person bounding boxes and confidence scores; checkout-zone membership can be applied by the script."
+            }
+          ]
+        },
+        "class_coverage": {
+          "person detection@input1": {
+            "targets": [
+              {
+                "basis": "The ONNX metadata identifies a COCO-trained detection model with a person class, and application.py documents decoding raw box and class predictions. The scan does not establish performance for detecting every person in dense, heavily occluded crowds.",
+                "kind": "",
+                "labels": [],
+                "model_path": "",
+                "output": "",
+                "requested": "person",
+                "status": "unknown"
+              }
+            ],
+            "version": 1
+          }
+        },
+        "class_coverage_signature": "6d052d1dbc62dd765cda6957",
+        "covers_tasks": [
+          "person detection@input1"
+        ],
+        "id": "src1",
+        "label_space": {
+          "count": 80,
+          "labels": [
+            "person",
+            "bicycle",
+            "car",
+            "motorcycle",
+            "airplane",
+            "bus",
+            "train",
+            "truck",
+            "boat",
+            "traffic light",
+            "fire hydrant",
+            "stop sign",
+            "parking meter",
+            "bench",
+            "bird",
+            "cat",
+            "dog",
+            "horse",
+            "sheep",
+            "cow",
+            "elephant",
+            "bear",
+            "zebra",
+            "giraffe",
+            "backpack",
+            "umbrella",
+            "handbag",
+            "tie",
+            "suitcase",
+            "frisbee",
+            "skis",
+            "snowboard",
+            "sports ball",
+            "kite",
+            "baseball bat",
+            "baseball glove",
+            "skateboard",
+            "surfboard",
+            "tennis racket",
+            "bottle",
+            "wine glass",
+            "cup",
+            "fork",
+            "knife",
+            "spoon",
+            "bowl",
+            "banana",
+            "apple",
+            "sandwich",
+            "orange",
+            "broccoli",
+            "carrot",
+            "hot dog",
+            "pizza",
+            "donut",
+            "cake",
+            "chair",
+            "couch",
+            "potted plant",
+            "bed",
+            "dining table",
+            "toilet",
+            "tv",
+            "laptop",
+            "mouse",
+            "remote",
+            "keyboard",
+            "cell phone",
+            "microwave",
+            "oven",
+            "toaster",
+            "sink",
+            "refrigerator",
+            "book",
+            "clock",
+            "vase",
+            "scissors",
+            "teddy bear",
+            "hair drier",
+            "toothbrush"
+          ],
+          "source": "model/yolo11s.onnx metadata 'names'; application.py",
+          "version": 3
+        },
+        "model_paths": [
+          "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx"
+        ],
+        "model_roles": [
+          {
+            "for_task": "person detection@input1",
+            "path": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring/model/yolo11s.onnx",
+            "role": "Detects COCO classes, including people, and produces box and confidence predictions."
+          }
+        ],
+        "pipeline_command": "python application.py /home/dread/videos/crowd/MOT20-02.mp4",
+        "project_path": "/home/dread/.pipegen/shivohampandeyqai/a2f60bd6-f599-45b4-85ce-69f431eff9fc/src1/CheckoutMonitoring",
+        "scan_hash": "9bca557793c7b3e3325d6098c28dddbc550f55fb770e33cfe772930cb2d8c26a",
+        "source": "benchmark",
+        "subfolder": "CheckoutMonitoring",
+        "unused_models": []
+      }
+    ],
+    "class_waivers": [
+      "classes.src1.person detection@input1"
+    ]
+  },
+  "loop": {
+    "turn_id": 0,
+    "conversation_context": "",
+    "questionForUser": [],
+    "userConfirmed": true
+  }
+}
